@@ -1,52 +1,11 @@
 import * as tsdoc from "@microsoft/tsdoc";
 import * as ts from "typescript";
 
-import { kindFilter } from "./util";
+import { isDeclarationKind, kindFilter } from "./util";
 
-/**
- * Check given kind is declaration
- *
- * @remarks
- * from: https://github.com/microsoft/tsdoc/blob/master/api-demo/src/advancedDemo.ts
- *
- * @param kind
- */
-function isDeclarationKind(kind: ts.SyntaxKind) {
-  return (
-    kind === ts.SyntaxKind.ArrowFunction ||
-    kind === ts.SyntaxKind.BindingElement ||
-    kind === ts.SyntaxKind.ClassDeclaration ||
-    kind === ts.SyntaxKind.ClassExpression ||
-    kind === ts.SyntaxKind.Constructor ||
-    kind === ts.SyntaxKind.EnumDeclaration ||
-    kind === ts.SyntaxKind.EnumMember ||
-    kind === ts.SyntaxKind.ExportSpecifier ||
-    kind === ts.SyntaxKind.FunctionDeclaration ||
-    kind === ts.SyntaxKind.FunctionExpression ||
-    kind === ts.SyntaxKind.GetAccessor ||
-    kind === ts.SyntaxKind.ImportClause ||
-    kind === ts.SyntaxKind.ImportEqualsDeclaration ||
-    kind === ts.SyntaxKind.ImportSpecifier ||
-    kind === ts.SyntaxKind.InterfaceDeclaration ||
-    kind === ts.SyntaxKind.JsxAttribute ||
-    kind === ts.SyntaxKind.MethodDeclaration ||
-    kind === ts.SyntaxKind.MethodSignature ||
-    kind === ts.SyntaxKind.ModuleDeclaration ||
-    kind === ts.SyntaxKind.NamespaceExportDeclaration ||
-    kind === ts.SyntaxKind.NamespaceImport ||
-    kind === ts.SyntaxKind.Parameter ||
-    kind === ts.SyntaxKind.PropertyAssignment ||
-    kind === ts.SyntaxKind.PropertyDeclaration ||
-    kind === ts.SyntaxKind.PropertySignature ||
-    kind === ts.SyntaxKind.SetAccessor ||
-    kind === ts.SyntaxKind.ShorthandPropertyAssignment ||
-    kind === ts.SyntaxKind.TypeAliasDeclaration ||
-    kind === ts.SyntaxKind.TypeParameter ||
-    kind === ts.SyntaxKind.VariableDeclaration ||
-    kind === ts.SyntaxKind.JSDocTypedefTag ||
-    kind === ts.SyntaxKind.JSDocCallbackTag ||
-    kind === ts.SyntaxKind.JSDocPropertyTag
-  );
+export interface IFoundComment {
+  compilerNode: ts.Node;
+  textRange: tsdoc.TextRange;
 }
 
 /**
@@ -62,9 +21,7 @@ export function extractComments(source: ts.SourceFile) {
       return;
     }
 
-    const buffer =
-      node.getSourceFile()?.getFullText() || node.getFullText(source);
-
+    const buffer = source.getFullText();
     const ranges = getJSDocCommentRanges(node, buffer);
 
     ranges.forEach(comment => {
@@ -80,11 +37,6 @@ export function extractComments(source: ts.SourceFile) {
   });
 
   return foundComments;
-}
-
-export interface IFoundComment {
-  compilerNode: ts.Node;
-  textRange: tsdoc.TextRange;
 }
 
 /**
