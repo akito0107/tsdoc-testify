@@ -1,17 +1,8 @@
 import * as ts from "typescript";
-import { extractComments, parseTSDoc, collectExampleCodes } from "../parser";
+import { collectExampleCodes, extractComments, parseTSDoc } from "../parser";
 import { strict as assert } from "assert";
 import * as tsdoc from "@microsoft/tsdoc";
-
-function createVirtualSource({
-  src,
-  fileName
-}: {
-  src: string;
-  fileName: string;
-}) {
-  return ts.createSourceFile(fileName, src, ts.ScriptTarget.ES2015);
-}
+import { createVirtualSource } from "./helper";
 
 describe("extractComments", () => {
   it("single case", () => {

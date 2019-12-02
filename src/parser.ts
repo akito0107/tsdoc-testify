@@ -84,7 +84,7 @@ export function parseTSDoc(comment: IFoundComment): tsdoc.DocComment {
   return parserContext.docComment;
 }
 
-type exampleCodeSpec = {
+export type ExampleCodeSpec = {
   name: string;
   code: string;
   node: ts.Node;
@@ -95,8 +95,8 @@ export function collectExampleCodes(
   parent: ts.Node,
   source: ts.SourceFile,
   docNode: tsdoc.DocComment
-): Array<exampleCodeSpec> {
-  const specs: exampleCodeSpec[] = [];
+): Array<ExampleCodeSpec> {
+  const specs: ExampleCodeSpec[] = [];
 
   let order = 0;
   kindFilter(docNode, tsdoc.DocNodeKind.Block, (node: tsdoc.DocNode) => {
