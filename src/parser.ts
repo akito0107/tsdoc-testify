@@ -1,6 +1,8 @@
 import * as tsdoc from "@microsoft/tsdoc";
 import * as ts from "typescript";
 
+import { kindFilter } from "./util";
+
 /**
  * Check given kind is declaration
  *
@@ -128,4 +130,39 @@ export function parseTSDoc(comment: IFoundComment): tsdoc.DocComment {
 
   const parserContext = tsdocParser.parseRange(comment.textRange);
   return parserContext.docComment;
+}
+
+type exampleCodeSpec = {
+  name: string;
+  code: string;
+  node: ts.Node;
+  source: ts.SourceFile;
+};
+
+export function collectExampleCodes(
+  parent: ts.Node,
+  source: ts.SourceFile,
+  docNode: tsdoc.DocComment
+): Array<exampleCodeSpec> {
+  const specs: exampleCodeSpec[] = [];
+
+  let order = 0;
+  kindFilter(docNode, tsdoc.DocNodeKind.Block, (node: tsdoc.DocNode) => {
+    kindFilter(node, tsdoc.DocNodeKind.FencedCode, fenced => {
+      specs.push({
+        source,
+        node: parent,
+        code: (fenced as tsdoc.DocFencedCode).code,
+        name: buildName(source, parent, ++order)
+      });
+      return true;
+    });
+    return true;
+  });
+
+  return specs;
+}
+
+function buildName(source: ts.SourceFile, _: ts.Node, order: number): string {
+  return `${source.fileName}_${order}`;
 }

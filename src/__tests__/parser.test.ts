@@ -1,7 +1,6 @@
 import * as ts from "typescript";
-import { extractComments, parseTSDoc } from "../parser";
+import { extractComments, parseTSDoc, collectExampleCodes } from "../parser";
 import { strict as assert } from "assert";
-import { inspect, kindFilter } from "../util";
 import * as tsdoc from "@microsoft/tsdoc";
 
 function createVirtualSource({
@@ -63,24 +62,59 @@ export function test() {
     });
 
     const foundComments = extractComments(source);
-
-    foundComments.forEach(c => {
-      const docComment = parseTSDoc(c);
-
-      inspect(docComment, n => {
-        if (n.kind === tsdoc.DocNodeKind.Block) {
-          const blockNode = n as tsdoc.DocBlock;
-          if (blockNode.blockTag.tagNameWithUpperCase === "@EXAMPLE") {
-            kindFilter(n, tsdoc.DocNodeKind.FencedCode, fencedCode => {
-              const codeNode = fencedCode as tsdoc.DocFencedCode;
-              console.log(codeNode.code);
-
-              return true;
-            });
-          }
-        }
-        return true;
-      });
-    });
+    const docNode = parseTSDoc(foundComments[0]);
+    const paragraph = docNode.summarySection.getChildNodes()[0] as tsdoc.DocParamCollection;
+    assert.equal(
+      (paragraph.getChildNodes()[0] as tsdoc.DocPlainText).text,
+      "Test function"
+    );
   });
+});
+
+describe("collectExampleCodes", () => {
+  const source = createVirtualSource({
+    src: `/**
+ * Test function
+ *
+ * @example
+ *
+ * \`\`\` 
+ * import { test1 } from "test-mod"
+ * test()
+ * test()
+ * \`\`\`
+ */
+export function test() {
+  // test
+  console.log("hello");
+}
+
+/**
+ * Test function2
+ *
+ * @example
+ *
+ * \`\`\` 
+ * import { test2 } from "test-mod"
+ * test2()
+ * test2()
+ * \`\`\`
+ */
+export function test2() {
+  // test
+  console.log("hello");
+}
+
+    `,
+    fileName: "virtual.ts"
+  });
+
+  const foundComments = extractComments(source);
+  const docNode = parseTSDoc(foundComments[0]);
+  const examples = collectExampleCodes(
+    foundComments[0].compilerNode,
+    source,
+    docNode
+  );
+  console.log(examples);
 });
