@@ -23,61 +23,90 @@ function unique<T>(arr: Array<T>): Array<T> {
 }
 
 export function mergeImports(imports: ts.ImportDeclaration[]): ts.Node[] {
-  const reduced = imports.reduce((acc, i) => {
-    const moduleSpecifier = (i?.moduleSpecifier as ts.StringLiteral)?.text;
-    if (!moduleSpecifier) {
-      return acc;
-    }
-    if (!acc[moduleSpecifier]) {
-      acc[moduleSpecifier] = [];
-    }
-    acc[moduleSpecifier].push(i);
-    return acc;
-  }, {});
-
-  return Object.values(reduced).map((r: Array<ts.ImportDeclaration>) => {
-    const names = r.reduce(
-      (acc, i) => {
-        const idents = i.importClause?.name
-          ? unique([...acc.idents, i.importClause.name.escapedText])
-          : acc.idents;
-
-        const namedImports = i.importClause?.namedBindings as ts.NamedImports;
-        if (!namedImports) {
-          return { ...acc, idents };
+  const reduced = imports.reduce(
+    (acc, i) => {
+      if (ts.isNamedImports(i.importClause.namedBindings)) {
+        const moduleSpecifier = (i?.moduleSpecifier as ts.StringLiteral)?.text;
+        if (!moduleSpecifier) {
+          return acc;
         }
+        if (!acc.namedImports[moduleSpecifier]) {
+          acc.namedImports[moduleSpecifier] = [];
+        }
+        acc.namedImports[moduleSpecifier].push(i);
+        return acc;
+      }
+      if (ts.isNamespaceImport(i.importClause.namedBindings)) {
+        const moduleSpecifier = (i?.moduleSpecifier as ts.StringLiteral)?.text;
+        if (!moduleSpecifier) {
+          return acc;
+        }
+        if (!acc.namespaceImports[moduleSpecifier]) {
+          acc.namespaceImports[moduleSpecifier] = [];
+        }
+        acc.namespaceImports[moduleSpecifier].push(i);
+        return acc;
+      }
+    },
+    { namedImports: {}, namespaceImports: {} }
+  );
 
-        const specifiers = namedImports.elements
-          ?.filter(e => e)
-          .map(s => {
-            if (s.propertyName) {
-              return `${s.propertyName.escapedText} as ${s.name.escapedText}`;
-            }
-            return s.name.escapedText;
-          });
+  const namespaceImports = Object.values(reduced.namespaceImports).map(
+    (r: Array<ts.ImportDeclaration>) => {
+      return r[0];
+    }
+  );
 
-        return {
-          bindings: unique([...acc.bindings, ...specifiers]),
-          idents
-        };
-      },
-      { bindings: [], idents: [] }
-    );
+  const namedImports = Object.values(reduced.namedImports).map(
+    (r: Array<ts.ImportDeclaration>) => {
+      const names = r.reduce(
+        (acc, i) => {
+          const idents = i.importClause?.name
+            ? unique([...acc.idents, i.importClause.name.escapedText])
+            : acc.idents;
 
-    const namedImportSpecifiers = names.bindings.map(n => {
-      // TOOD: passing propertyName with correct way
-      return ts.createImportSpecifier(undefined, ts.createIdentifier(n));
-    });
-    const name =
-      names.idents.length !== 0
-        ? ts.createIdentifier(names.idents[0])
-        : undefined;
+          const namedImports = i.importClause?.namedBindings as ts.NamedImports;
+          if (!namedImports) {
+            return { ...acc, idents };
+          }
 
-    return ts.createImportDeclaration(
-      undefined,
-      undefined,
-      ts.createImportClause(name, ts.createNamedImports(namedImportSpecifiers)),
-      r[0].moduleSpecifier
-    );
-  });
+          const specifiers = namedImports.elements
+            ?.filter(e => e)
+            .map(s => {
+              if (s.propertyName) {
+                return `${s.propertyName.escapedText} as ${s.name.escapedText}`;
+              }
+              return s.name.escapedText;
+            });
+
+          return {
+            bindings: unique([...acc.bindings, ...specifiers]),
+            idents
+          };
+        },
+        { bindings: [], idents: [] }
+      );
+
+      const namedImportSpecifiers = names.bindings.map(n => {
+        // TOOD: passing propertyName with correct way
+        return ts.createImportSpecifier(undefined, ts.createIdentifier(n));
+      });
+      const name =
+        names.idents.length !== 0
+          ? ts.createIdentifier(names.idents[0])
+          : undefined;
+
+      return ts.createImportDeclaration(
+        undefined,
+        undefined,
+        ts.createImportClause(
+          name,
+          ts.createNamedImports(namedImportSpecifiers)
+        ),
+        r[0].moduleSpecifier
+      );
+    }
+  );
+
+  return [...namespaceImports, ...namedImports];
 }

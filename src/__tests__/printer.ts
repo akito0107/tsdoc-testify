@@ -31,7 +31,7 @@ function exampleToJestAST(example: ExampleCodeSpec): ts.Node {
   return ts.createExpressionStatement(testCaseAST);
 }
 
-test("print ast", () => {
+test.skip("print ast", () => {
   const source = createVirtualSource({
     src: `/**
  * Test function

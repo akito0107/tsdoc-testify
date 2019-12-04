@@ -62,7 +62,7 @@ import { b, c } from "moduleA";`,
 test("merge imports (multi module)", () => {
   mergeImportsRunner(
     `import { a, b } from "moduleA";
-import { b, c } from "moduleA";,
+import { b, c } from "moduleA";
 import { d, e } from "moduleB";
 `,
     `import { a, b, c } from "moduleA";
@@ -84,9 +84,20 @@ import { b as balias, c } from "moduleA";,
 test("named imports + identifier", () => {
   mergeImportsRunner(
     `import React, { useCallback } from "react";
-import React, { useState, useCallback } from "react";,
+import React, { useState, useCallback } from "react";
 `,
     `import React, { useCallback, useState } from "react";
+`
+  );
+});
+
+test("default imports + named imports", () => {
+  mergeImportsRunner(
+    `import * as ts from "typescript";
+import { createIdentifier, Node } from "typescript";
+`,
+    `import * as ts from "typescript";
+import { createIdentifier, Node } from "typescript";
 `
   );
 });
