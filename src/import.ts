@@ -17,3 +17,9 @@ export function splitImport(
 
   return { imports, body };
 }
+
+export function mergeImports(
+  imports: ts.ImportDeclaration[]
+): ts.Node {
+
+}
