@@ -2,7 +2,7 @@ import * as ts from "typescript";
 
 export function splitImport(
   source: ts.SourceFile
-): { imports: ts.ImportDeclaration[]; body: ts.Node } {
+): { imports: ts.ImportDeclaration[]; body: ts.Statement[] } {
   const imports = [] as Array<ts.ImportDeclaration>;
   const stmts = [] as Array<ts.Statement>;
 
@@ -13,9 +13,8 @@ export function splitImport(
       stmts.push(stmt);
     }
   });
-  const body = ts.updateSourceFileNode(source, stmts);
 
-  return { imports, body };
+  return { imports, body: stmts };
 }
 
 function unique<T>(arr: Array<T>): Array<T> {

@@ -15,8 +15,11 @@ b();
 
   const { imports, body } = splitImport(source);
 
+  const res = createVirtualSource({ src: "", fileName: "b" });
+  const ast = ts.updateSourceFileNode(res, body);
+
   assert.equal(
-    print(body),
+    print(ast),
     `a();
 b();
 `
