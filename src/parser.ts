@@ -10,7 +10,7 @@ export interface IFoundComment {
 
 /**
  *
- * Collect comments from ts.sourceFile
+ * Collect comments from ts.SourceFile
  *
  * @param source
  */
