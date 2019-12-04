@@ -47,7 +47,8 @@
       }
     },
     "testMatch": [
-      "**/__tests__/*.+(ts|tsx|js)"
+      "**/__tests__/*.+(ts|tsx|js)",
+      "**/*.doctest.ts"
     ],
     "testPathIgnorePatterns": [
       "/node_modules/",

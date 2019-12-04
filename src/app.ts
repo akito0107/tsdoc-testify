@@ -3,20 +3,21 @@ import { collectExampleCodes, extractComments, parseTSDoc } from "./parser";
 import { mergeImports, splitImport } from "./import";
 import { wrapTestFunction } from "./funcwrapper";
 import { print } from "./printer";
-import { readFileSync } from "fs";
+import { readFileSync, writeFileSync } from "fs";
+import * as path from "path";
 
 export function generate({ filePath }) {
-  const ext = filePath.split(".").pop();
+  const { ext, name, dir } = path.parse(filePath);
 
   let kind;
   switch (ext.toUpperCase()) {
-    case "TS":
+    case ".TS":
       kind = ts.ScriptKind.TS;
       break;
-    case "TSX":
+    case ".TSX":
       kind = ts.ScriptKind.TSX;
       console.log("currently unsupported tsx ", filePath);
-      return
+      return;
     default:
       console.log("unknown file extension ", filePath);
       return;
@@ -83,5 +84,5 @@ export function generate({ filePath }) {
     [...mergedImports, ...testBody]
   );
 
-  console.log(print(ast));
+  writeFileSync(`${dir}/${name}.doctest.ts`, print(ast));
 }
