@@ -4,10 +4,9 @@ import { strict as assert } from "assert";
 import * as tsdoc from "@microsoft/tsdoc";
 import { createVirtualSource } from "./helper";
 
-describe("extractComments", () => {
-  it("single case", () => {
-    const source = createVirtualSource({
-      src: `
+test("extractComments single case", () => {
+  const source = createVirtualSource({
+    src: `
     /**
  * Test function
  *
@@ -22,16 +21,16 @@ export function test() {
   console.log("hello");
 }
     `,
-      fileName: "virtual.ts"
-    });
-
-    const foundComments = extractComments(source);
-    assert(ts.isFunctionDeclaration(foundComments[0].compilerNode));
+    fileName: "virtual.ts"
   });
 
-  it("multi declare", () => {
-    const source = createVirtualSource({
-      src: `/**
+  const foundComments = extractComments(source);
+  assert(ts.isFunctionDeclaration(foundComments[0].compilerNode));
+});
+
+test("extractComments multi declare", () => {
+  const source = createVirtualSource({
+    src: `/**
  * Test function
  *
  * @example
@@ -58,17 +57,16 @@ export function test2() {
   console.log("hello");
 }
     `,
-      fileName: "virtual.ts"
-    });
-
-    const foundComments = extractComments(source);
-
-    assert.equal(foundComments.length, 2);
-    assert(ts.isFunctionDeclaration(foundComments[0].compilerNode));
+    fileName: "virtual.ts"
   });
+
+  const foundComments = extractComments(source);
+
+  assert.equal(foundComments.length, 2);
+  assert(ts.isFunctionDeclaration(foundComments[0].compilerNode));
 });
 
-describe("parseTSDoc", () => {
+test("parseTSDoc", () => {
   const source = createVirtualSource({
     src: `
     /**
@@ -98,7 +96,7 @@ export function test() {
   );
 });
 
-describe("collectExampleCodes", () => {
+test("collectExampleCodes", () => {
   const source = createVirtualSource({
     src: `/**
  * Test function
