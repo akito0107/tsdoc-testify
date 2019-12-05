@@ -9,4 +9,3 @@ export function createVirtualSource({
 }) {
   return ts.createSourceFile(fileName, src, ts.ScriptTarget.ES2015);
 }
-

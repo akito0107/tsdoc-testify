@@ -16,9 +16,11 @@ export interface IFoundComment {
  */
 export function extractComments(source: ts.SourceFile) {
   const foundComments: IFoundComment[] = [];
-  source.forEachChild(node => {
+
+  function walk(node: ts.Node) {
     if (!isDeclarationKind(node.kind)) {
-      return;
+      node.forEachChild(walk);
+      return false;
     }
 
     const buffer = source.getFullText();
@@ -34,9 +36,27 @@ export function extractComments(source: ts.SourceFile) {
         )
       });
     });
-  });
+    node.forEachChild(walk);
+    return false;
+  }
 
-  return foundComments;
+  walk(source);
+
+  const cs = foundComments.reduce((acc, comment) => {
+    if (!acc[comment.textRange.toString()]) {
+      acc[comment.textRange.toString()] = [];
+    }
+    acc[comment.textRange.toString()].push(comment);
+    return acc;
+  }, {});
+
+  return Object.values(cs)
+    .map((nodes: Array<IFoundComment>) => {
+      return nodes[0];
+    })
+    .sort((a, b) => {
+      return a.textRange.pos - b.textRange.pos;
+    });
 }
 
 /**
@@ -57,12 +77,13 @@ function getJSDocCommentRanges(node: ts.Node, text: string): ts.CommentRange[] {
     case ts.SyntaxKind.FunctionExpression:
     case ts.SyntaxKind.ArrowFunction:
     case ts.SyntaxKind.ParenthesizedExpression:
+    case ts.SyntaxKind.VariableStatement: // needed on our case
       commentRanges.push(
         ...(ts.getTrailingCommentRanges(text, node.pos) || [])
       );
       break;
   }
-  commentRanges.push(...(ts.getLeadingCommentRanges(text, node.pos) || []));
+  commentRanges.push(...(ts.getLeadingCommentRanges(text, node.pos) || [])); // // style comments
 
   // True if the comment starts with '/**' but not if it is '/**/'
   return commentRanges.filter(

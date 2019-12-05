@@ -6,8 +6,7 @@ import { createVirtualSource } from "./helper";
 
 test("extractComments single case", () => {
   const source = createVirtualSource({
-    src: `
-    /**
+    src: `/**
  * Test function
  *
  * @example
@@ -53,8 +52,41 @@ export function test() {
  * test2()
  * \`\`\`
  */
-export function test2() {
-  console.log("hello");
+export const test2 = () => {}
+    `,
+    fileName: "virtual.ts"
+  });
+
+  const foundComments = extractComments(source);
+
+  assert.equal(foundComments.length, 2);
+  console.log(foundComments[1].compilerNode.kind)
+  assert(ts.isVariableStatement(foundComments[1].compilerNode));
+});
+
+test("extractComments class", () => {
+  const source = createVirtualSource({
+    src: `/**
+* Test class
+*
+* @example
+*
+* \`\`\` 
+* const test = new TestClass()
+* \`\`\`
+*/
+class TestClass {
+  /**
+   * Test function
+   *
+   * @example
+   *
+   * \`\`\` 
+   * const test = new TestClass();
+   * test.fn();
+   * \`\`\`
+   */
+  fn() {}
 }
     `,
     fileName: "virtual.ts"
@@ -63,7 +95,8 @@ export function test2() {
   const foundComments = extractComments(source);
 
   assert.equal(foundComments.length, 2);
-  assert(ts.isFunctionDeclaration(foundComments[0].compilerNode));
+  console.log(foundComments[0].compilerNode.kind)
+  assert(ts.isMethodDeclaration(foundComments[0].compilerNode));
 });
 
 test("parseTSDoc", () => {

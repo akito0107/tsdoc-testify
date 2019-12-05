@@ -160,6 +160,7 @@ export function isDeclarationKind(kind: ts.SyntaxKind) {
     kind === ts.SyntaxKind.VariableDeclaration ||
     kind === ts.SyntaxKind.JSDocTypedefTag ||
     kind === ts.SyntaxKind.JSDocCallbackTag ||
-    kind === ts.SyntaxKind.JSDocPropertyTag
+    kind === ts.SyntaxKind.JSDocPropertyTag ||
+    kind === ts.SyntaxKind.VariableStatement // Variable Statement is not declaration, however, it should be needed for `export const a = ...` style node
   );
 }
