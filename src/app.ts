@@ -59,16 +59,20 @@ export function generate({ filePath }) {
       };
     })
     .reduce(
-      (acc, { exampleSource, name }) => {
+      (acc, { source, exampleSource, name }) => {
         const { imports, body } = splitImport(exampleSource);
-        const testBody = wrapTestFunction(name, body);
+
+        const funcName =
+          name !== "" ? name : `${source.fileName}_${acc.counter++}`;
+
+        const testBody = wrapTestFunction(funcName, body);
         return {
           ...acc,
           imports: [...acc.imports, ...imports],
           testBody: [...acc.testBody, testBody]
         };
       },
-      { imports: [], testBody: [] }
+      { imports: [], testBody: [], counter: 0 }
     );
 
   const mergedImports = mergeImports(imports);

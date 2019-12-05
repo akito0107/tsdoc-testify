@@ -119,14 +119,13 @@ export function collectExampleCodes(
 ): Array<ExampleCodeSpec> {
   const specs: ExampleCodeSpec[] = [];
 
-  let order = 0;
   kindFilter(docNode, tsdoc.DocNodeKind.Block, (node: tsdoc.DocNode) => {
     kindFilter(node, tsdoc.DocNodeKind.FencedCode, fenced => {
       specs.push({
         source,
         node: parent,
         code: (fenced as tsdoc.DocFencedCode).code,
-        name: buildName(source, parent, ++order)
+        name: "" // to be filled
       });
       return true;
     });
@@ -134,8 +133,4 @@ export function collectExampleCodes(
   });
 
   return specs;
-}
-
-function buildName(source: ts.SourceFile, _: ts.Node, order: number): string {
-  return `${source.fileName}_${order}`;
 }

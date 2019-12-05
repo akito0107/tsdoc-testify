@@ -60,7 +60,6 @@ export const test2 = () => {}
   const foundComments = extractComments(source);
 
   assert.equal(foundComments.length, 2);
-  console.log(foundComments[1].compilerNode.kind)
   assert(ts.isVariableStatement(foundComments[1].compilerNode));
 });
 
