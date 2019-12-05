@@ -100,8 +100,8 @@ export function kindFilter<T extends tsdoc.DocNodeKind>(
 }
 
 class Filter<K extends tsdoc.DocNodeKind> implements IVisitor {
-  private filterKind: K;
-  private callback: inspectFn<FromKind<K>>;
+  private readonly filterKind: K;
+  private readonly callback: inspectFn<FromKind<K>>;
 
   constructor(kind: K, inspector: inspectFn<FromKind<K>>) {
     this.filterKind = kind;
