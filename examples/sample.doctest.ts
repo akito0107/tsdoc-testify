@@ -18,6 +18,3 @@ test("class method example", () => {
   const duck = new Duck();
   assert.equal(duck.quack(), "quack");
 });
-test("/Users/akito/workspace/tsdoc-testify/examples/sample.ts_2", () => {
-  assert.equal(sub(3, 2), 1);
-});

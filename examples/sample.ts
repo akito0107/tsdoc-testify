@@ -80,6 +80,7 @@ export class Duck {
   quack() {
     return "quack"
   }
+
   /**
    * @example
    * {@ignoreExample}
@@ -92,29 +93,4 @@ export class Duck {
   ignore() {
     return "quack"
   }
-}
-
-/**
- * @example
- *
- * ```
- * import * as assert from "assert";
- * import { sub } from "./sample";
- *
- * assert.equal(sub(3, 2), 1);
- * ```
- *
- * @example
- * {@ignoreExample}
- *
- * ```
- * import * as assert from "assert";
- * import { sub } from "./sample";
- *
- * assert.equal(sub(2, 1), 1);
- * ```
- *
- */
-export function sub(a: number, b: number) {
-  return a - b;
 }
