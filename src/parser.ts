@@ -97,9 +97,19 @@ function getJSDocCommentRanges(node: ts.Node, text: string): ts.CommentRange[] {
 }
 
 export function parseTSDoc(comment: IFoundComment): tsdoc.DocComment {
-  const tsdocParser: tsdoc.TSDocParser = new tsdoc.TSDocParser(
-    new tsdoc.TSDocConfiguration()
-  );
+  const exampleCaseName = new tsdoc.TSDocTagDefinition({
+    tagName: "@exampleCaseName",
+    syntaxKind: tsdoc.TSDocTagSyntaxKind.InlineTag
+  });
+  const ignoreCase = new tsdoc.TSDocTagDefinition({
+    tagName: "@ignoreExample",
+    syntaxKind: tsdoc.TSDocTagSyntaxKind.InlineTag
+  });
+
+  const config = new tsdoc.TSDocConfiguration();
+  config.addTagDefinitions([exampleCaseName, ignoreCase]);
+
+  const tsdocParser: tsdoc.TSDocParser = new tsdoc.TSDocParser(config);
 
   const parserContext = tsdocParser.parseRange(comment.textRange);
   return parserContext.docComment;
@@ -119,13 +129,32 @@ export function collectExampleCodes(
 ): Array<ExampleCodeSpec> {
   const specs: ExampleCodeSpec[] = [];
 
-  kindFilter(docNode, tsdoc.DocNodeKind.Block, (node: tsdoc.DocNode) => {
+  kindFilter(docNode, tsdoc.DocNodeKind.Block, node => {
+    if (node.blockTag.tagNameWithUpperCase !== "@EXAMPLE") {
+      return;
+    }
+
+    let name: string = "";
+    let skip = false;
+    kindFilter(node, tsdoc.DocNodeKind.InlineTag, inlineNode => {
+      if (inlineNode.tagNameWithUpperCase === "@IGNOREEXAMPLE") {
+        skip = true;
+        return false;
+      }
+      if (inlineNode.tagNameWithUpperCase === "@EXAMPLECASENAME") {
+        name = inlineNode.tagContent;
+      }
+      return true;
+    });
+    if (skip) {
+      return true;
+    }
     kindFilter(node, tsdoc.DocNodeKind.FencedCode, fenced => {
       specs.push({
         source,
         node: parent,
         code: (fenced as tsdoc.DocFencedCode).code,
-        name: "" // to be filled
+        name
       });
       return true;
     });

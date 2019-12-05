@@ -172,8 +172,6 @@ export function test2() {
     source,
     docNode
   );
-  //TODO
-  // assert.equal(examples[0].name, "virtual.ts_2");
   assert.equal(
     examples[0].code,
     `import { test2 } from "test-mod"
@@ -181,4 +179,75 @@ test2()
 test2()
 `
   );
+});
+
+test("customTags", () => {
+  const source = createVirtualSource({
+    src: `/**
+ * Test function
+ *
+ * @example
+ * {@exampleCaseName customtagTest}
+ * \`\`\` 
+ * import { test1 } from "test-mod"
+ * test()
+ * test()
+ * \`\`\`
+ */
+export function test() {
+  // test
+  console.log("hello");
+}
+    `,
+    fileName: "virtual.ts"
+  });
+
+  const foundComments = extractComments(source);
+  const docNode = parseTSDoc(foundComments[0]);
+  const examples = collectExampleCodes(
+    foundComments[0].compilerNode,
+    source,
+    docNode
+  );
+  assert.equal(examples[0].name, "customtagTest");
+  assert.equal(
+    examples[0].code,
+    `import { test1 } from "test-mod"
+test()
+test()
+`
+  );
+});
+
+test("ignore", () => {
+  const source = createVirtualSource({
+    src: `/**
+ * Test function
+ *
+ * @example
+ * {@ignoreExample}
+ *
+ * \`\`\` 
+ * import { test1 } from "test-mod"
+ * test()
+ * test()
+ * \`\`\`
+ */
+export function test() {
+  // test
+  console.log("hello");
+}
+    `,
+    fileName: "virtual.ts"
+  });
+
+  const foundComments = extractComments(source);
+  const docNode = parseTSDoc(foundComments[0]);
+  const examples = collectExampleCodes(
+    foundComments[0].compilerNode,
+    source,
+    docNode
+  );
+
+  assert.equal(examples.length, 0);
 });

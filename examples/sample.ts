@@ -13,12 +13,15 @@
  * assert.equal(sum(2, 1), 3);
  * ```
  *
+ * @example
+ * {@exampleCaseName customTag}
  * ```
  * import * as assert from "assert";
  * import { sum } from "./sample";
  *
  * assert.equal(sum(4, 5), 9);
  * ```
+ *
  * @param a
  * @param b
  */
@@ -60,6 +63,7 @@ export function sub(a: number, b: number) {
 export class Duck {
   /**
    * @example
+   * {@exampleCaseName class method example}
    *
    * ```
    * import * as assert from "assert";
@@ -73,4 +77,17 @@ export class Duck {
   quack() {
     return "quack"
   }
+  /**
+   * @example
+   * {@ignoreExample}
+   * ```
+   * // below code not appear on tests.
+   * duck.ignore()
+   * ```
+   *
+   */
+  ignore() {
+    return "quack"
+  }
+
 }
