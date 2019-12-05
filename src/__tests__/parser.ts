@@ -95,8 +95,7 @@ class TestClass {
   const foundComments = extractComments(source);
 
   assert.equal(foundComments.length, 2);
-  console.log(foundComments[0].compilerNode.kind)
-  assert(ts.isMethodDeclaration(foundComments[0].compilerNode));
+  assert(ts.isMethodDeclaration(foundComments[1].compilerNode));
 });
 
 test("parseTSDoc", () => {
