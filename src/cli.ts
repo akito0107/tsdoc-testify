@@ -15,10 +15,10 @@ const flag = mergeFlag(
 );
 
 const command = makeCommand({
-  name: "tsdoctestify",
+  name: "tsdoc-testify",
   description: "documentation testing generator for tsdoc",
   version: "0.0.1",
-  usage: "testdoctestify [OPTIONS]",
+  usage: "tsdoc-testify [OPTIONS]",
   flag,
   handler: (_, params) => {
     if (!params.filepath.value && !params.fileMatch.value) {

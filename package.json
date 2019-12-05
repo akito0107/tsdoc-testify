@@ -4,7 +4,7 @@
   "main": "./lib/app.js",
   "types": "./lib/app.d.ts",
   "bin": {
-    "tsdoctestify": "./lib/cli.js"
+    "tsdoc-testify": "./lib/cli.js"
   },
   "license": "Apache-2.0",
   "repository": "akito0107/tsdoc-testify",

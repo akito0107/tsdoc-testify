@@ -36,6 +36,7 @@ export function sum(a: number, b: number) {
  * demo
  *
  * @example
+ * {@exampleCaseName custom name here}
  *
  * ```
  * import * as assert from "assert";
@@ -43,6 +44,8 @@ export function sum(a: number, b: number) {
  *
  * assert.equal(sub(2, 1), 1);
  * ```
+ *
+ * @example
  *
  * ```
  * import * as assert from "assert";
@@ -89,5 +92,29 @@ export class Duck {
   ignore() {
     return "quack"
   }
+}
 
+/**
+ * @example
+ *
+ * ```
+ * import * as assert from "assert";
+ * import { sub } from "./sample";
+ *
+ * assert.equal(sub(3, 2), 1);
+ * ```
+ *
+ * @example
+ * {@ignoreExample}
+ *
+ * ```
+ * import * as assert from "assert";
+ * import { sub } from "./sample";
+ *
+ * assert.equal(sub(2, 1), 1);
+ * ```
+ *
+ */
+export function sub(a: number, b: number) {
+  return a - b;
 }
