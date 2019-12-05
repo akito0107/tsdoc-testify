@@ -1,7 +1,8 @@
-import { createVirtualSource, print } from "./helper";
+import { createVirtualSource } from "./helper";
 import * as ts from "typescript";
 import { strict as assert } from "assert";
 import { mergeImports, splitImport } from "../import";
+import { print } from "../printer";
 
 test("split imports", () => {
   const source = createVirtualSource({

@@ -1,7 +1,8 @@
-import { createVirtualSource, print } from "./helper";
+import { createVirtualSource } from "./helper";
 import { strict as assert } from "assert";
 import { splitImport } from "../import";
 import { wrapTestFunction } from "../funcwrapper";
+import { print } from "../printer";
 
 test("print ast", () => {
   const source = createVirtualSource({
