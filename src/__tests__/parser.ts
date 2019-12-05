@@ -14,7 +14,7 @@ function createVirtualSource({
 }
 
 describe("extractComments", () => {
-  it("parse example", () => {
+  it("single case", () => {
     const source = createVirtualSource({
       src: `
     /**
@@ -37,12 +37,49 @@ export function test() {
     const foundComments = extractComments(source);
     assert(ts.isFunctionDeclaration(foundComments[0].compilerNode));
   });
+
+  it("multi declare", () => {
+    const source = createVirtualSource({
+      src: `/**
+ * Test function
+ *
+ * @example
+ *
+ * \`\`\` 
+ * test()
+ * \`\`\`
+ */
+export function test() {
+  // test
+  console.log("hello");
+}
+
+/**
+ * Test function2
+ *
+ * @example
+ *
+ * \`\`\` 
+ * test2()
+ * \`\`\`
+ */
+export function test2() {
+  console.log("hello");
+}
+    `,
+      fileName: "virtual.ts"
+    });
+
+    const foundComments = extractComments(source);
+
+    assert.equal(foundComments.length, 2);
+    assert(ts.isFunctionDeclaration(foundComments[0].compilerNode));
+  });
 });
 
 describe("parseTSDoc", () => {
-  it("extract DocComment", () => {
-    const source = createVirtualSource({
-      src: `
+  const source = createVirtualSource({
+    src: `
     /**
  * Test function
  *
@@ -58,17 +95,16 @@ export function test() {
   console.log("hello");
 }
     `,
-      fileName: "virtual.ts"
-    });
-
-    const foundComments = extractComments(source);
-    const docNode = parseTSDoc(foundComments[0]);
-    const paragraph = docNode.summarySection.getChildNodes()[0] as tsdoc.DocParamCollection;
-    assert.equal(
-      (paragraph.getChildNodes()[0] as tsdoc.DocPlainText).text,
-      "Test function"
-    );
+    fileName: "virtual.ts"
   });
+
+  const foundComments = extractComments(source);
+  const docNode = parseTSDoc(foundComments[0]);
+  const paragraph = docNode.summarySection.getChildNodes()[0] as tsdoc.DocParamCollection;
+  assert.equal(
+    (paragraph.getChildNodes()[0] as tsdoc.DocPlainText).text,
+    "Test function"
+  );
 });
 
 describe("collectExampleCodes", () => {
@@ -110,11 +146,19 @@ export function test2() {
   });
 
   const foundComments = extractComments(source);
-  const docNode = parseTSDoc(foundComments[0]);
+  const docNode = parseTSDoc(foundComments[1]);
   const examples = collectExampleCodes(
-    foundComments[0].compilerNode,
+    foundComments[1].compilerNode,
     source,
     docNode
   );
-  console.log(examples);
+  //TODO
+  // assert.equal(examples[0].name, "virtual.ts_2");
+  assert.equal(
+    examples[0].code,
+    `import { test2 } from "test-mod"
+test2()
+test2()
+`
+  );
 });
