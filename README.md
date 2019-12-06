@@ -213,10 +213,10 @@ see [examples](./examples)
 
 ```
 NAME:
-   tsdoctestify - documentation testing generator for tsdoc
+   tsdoc-testify - documentation testing generator for tsdoc
 
 USAGE:
-   testdoctestify [OPTIONS]
+   tsdoc-testify [OPTIONS]
 
 VERSION:
   0.0.1
