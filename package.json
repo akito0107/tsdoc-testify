@@ -59,7 +59,8 @@
     ],
     "testPathIgnorePatterns": [
       "/node_modules/",
-      "helper.ts"
+      "helper.ts",
+      "/lib/"
     ]
   },
   "dependencies": {
