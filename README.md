@@ -90,7 +90,7 @@ Add `.doctest.ts` pattern to `testMatch` directive of `jest` config.
     },
     "globals": {
       "ts-jest": {
-        "tsConfig": "tsconfig.json"
+        "tsconfig": "tsconfig.json"
       }
     },
     "testMatch": [
