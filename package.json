@@ -36,6 +36,9 @@
     "ts-node": "^9.1.1",
     "typedoc": "^0.20.10"
   },
+  "resolutions": {
+    "kind-of": "^6.0.3"
+  },
   "jest": {
     "moduleFileExtensions": [
       "ts",
