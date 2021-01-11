@@ -103,7 +103,23 @@ Add `.doctest.ts` pattern to `testMatch` directive of `jest` config.
   },
 ```
 
-4. Run
+4. Setup `tsconfig.json`
+
+Add `@types/jest` to `types` directive of `tsconfig.json`.
+
+```json
+{
+  "compilerOptions": {
+    ...
+    "types": [
+      "@types/jest"  // add
+    ]
+  },
+  ...
+}
+```
+
+5. Run
 
 ```sh
 $ jest
