@@ -51,4 +51,4 @@ jobs:
       - name: Install packages
         run: yarn install --frozen-lockfile
       - name: Lint
-        run:  run lint
+        run:  yarn run lint
