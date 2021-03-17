@@ -20,7 +20,7 @@ export function test() {
   console.log("hello");
 }
     `,
-    fileName: "virtual.ts"
+    fileName: "virtual.ts",
   });
 
   const foundComments = extractComments(source);
@@ -54,7 +54,7 @@ export function test() {
  */
 export const test2 = () => {}
     `,
-    fileName: "virtual.ts"
+    fileName: "virtual.ts",
   });
 
   const foundComments = extractComments(source);
@@ -88,7 +88,7 @@ class TestClass {
   fn() {}
 }
     `,
-    fileName: "virtual.ts"
+    fileName: "virtual.ts",
   });
 
   const foundComments = extractComments(source);
@@ -115,7 +115,7 @@ export function test() {
   console.log("hello");
 }
     `,
-    fileName: "virtual.ts"
+    fileName: "virtual.ts",
   });
 
   const foundComments = extractComments(source);
@@ -162,7 +162,7 @@ export function test2() {
 }
 
     `,
-    fileName: "virtual.ts"
+    fileName: "virtual.ts",
   });
 
   const foundComments = extractComments(source);
@@ -199,7 +199,7 @@ export function test() {
   console.log("hello");
 }
     `,
-    fileName: "virtual.ts"
+    fileName: "virtual.ts",
   });
 
   const foundComments = extractComments(source);
@@ -238,7 +238,7 @@ export function test() {
   console.log("hello");
 }
     `,
-    fileName: "virtual.ts"
+    fileName: "virtual.ts",
   });
 
   const foundComments = extractComments(source);

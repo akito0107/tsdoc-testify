@@ -10,7 +10,7 @@ test("print ast", () => {
 a();
 b();
 `,
-    fileName: "virtual.ts"
+    fileName: "virtual.ts",
   });
 
   const { body } = splitImport(source);

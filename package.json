@@ -15,8 +15,9 @@
   "scripts": {
     "test": "jest",
     "lint": "eslint ./src/**/*.ts",
-    "fmt": "eslint --fix ./src/**/*/ts",
+    "fmt": "eslint --fix ./src/**/*.ts",
     "build": "yarn run clean && tsc",
+    "test:build": "tsc --noEmit",
     "clean": "rimraf ./lib/*",
     "examplesdoc": "typedoc --out examplesdoc examples"
   },

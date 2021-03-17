@@ -2,7 +2,7 @@ import * as ts from "typescript";
 
 export function createVirtualSource({
   src,
-  fileName
+  fileName,
 }: {
   src: string;
   fileName: string;

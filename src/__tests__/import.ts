@@ -11,7 +11,7 @@ import { a, b } from "moduleA";
 a();
 b();
 `,
-    fileName: "virtual.ts"
+    fileName: "virtual.ts",
   });
 
   const { imports, body } = splitImport(source);
@@ -42,7 +42,7 @@ b();
 function mergeImportsRunner(src: string, expect: string) {
   const source = createVirtualSource({
     src,
-    fileName: "virtual.ts"
+    fileName: "virtual.ts",
   });
   const { imports } = splitImport(source);
   const results = mergeImports(imports);
